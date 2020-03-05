@@ -19,7 +19,7 @@ class BotHandlerMixin:
         """
         Method to extract message id from telegram request.
         """
-        message_text = data['message']['text']
+        message_text = data['message'] #['text']
 
         return message_text
 
