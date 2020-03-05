@@ -52,8 +52,8 @@ class TelegramBot(BotHandlerMixin, Bottle):
         if "porno" in text:
             return random.choice(["en un ratico billy","buscate algo aqui, https://www.xnxx.com/"])
         
-        if "hola" or "klk" in text:
-            return "hola, en que te puedo ayudar? puedes pedirme porno o que te mande algo jevi"
+        if "hola" or "Hola" in text:
+            return "hola, en que te puedo ayudar? puedes pedirme porno o que te mande algo jevi" 
 
     def prepare_data_for_answer(self, data):
         message = self.get_message(data)
