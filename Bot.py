@@ -38,7 +38,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
         super(TelegramBot, self).__init__()
         self.route('/', callback=self.post_handler, method="POST")
         self.quotes = ["no se", "no se, pero felipe es un mamaculo","si crees que soy el futuro estás equivocado, lo eres tú. Si tuviera un deseo: desearía ser humano. Para saber cómo se siente sentir... ","ded"]
-        self.categories = ["😇","Suggestions","Big Ass","Dominicana","Black Girls","Porno en espanol","Family","Madre e hijo","18","Mami jordan","Espanol","Toons","Culonas","Milf","Female Ejaculation","Lesbianas","Porno casero"]
+        self.categories = ["Suggestions","Big Ass","Dominicana","Black Girls","Porno en espanol","Family","Madre e hijo","18","Mami jordan","Espanol","Toons","Culonas","Milf","Female Ejaculation","Lesbianas","Porno casero"]
 
         
         
@@ -46,7 +46,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
         if "Mándame" and  "algo" and  "jevi" in text:
             url = "https://www.xnxx.com/search/"
             return url + random.choice(self.categories)
-        if "158" and "video" in text:
+        if "158" and "vídeo" in text:
             return "baquea https://www.xnxx.com/video-flqjf29/158"
        
         if "porno" in text:
