@@ -35,7 +35,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
     BOT_URL = None
     
     if os.environ.get('APP_LOCATION') == 'heroku':
-      BOT_URL = os.environ.get("API_TOKEN")
+      BOT_URL = os.environ.get("API_TOKEN_URL")
     else:
       BOT_URL = 'https://api.telegram.org/bot931660199:AAF__ZLvWzFZz8T5Ykbbwwj1VdnmvwdI0p8/'
     
