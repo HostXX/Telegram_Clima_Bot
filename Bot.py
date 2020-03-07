@@ -1,12 +1,14 @@
+import re
 import random
 import os
 import requests
 from bottle import Bottle, response, request as bottle_request
-
+import Clima
 
 class BotHandlerMixin:  
     BOT_URL = None
-
+    
+    
     def get_chat_id(self, data):
         """
         Method to extract chat id from telegram request.
@@ -33,6 +35,8 @@ class BotHandlerMixin:
 
 class TelegramBot(BotHandlerMixin, Bottle):  
     BOT_URL = None
+    CLIMA_URL = "https://api.darksky.net/forecast/246b51e71bee40bb6c2891177a6d6035/"
+    coordinates = "18.4667,-69.9000"
     
     if os.environ.get('APP_LOCATION') == 'heroku':
       BOT_URL = os.environ.get("API_TOKEN_URL")
@@ -43,38 +47,41 @@ class TelegramBot(BotHandlerMixin, Bottle):
     def __init__(self, *args, **kwargs):
         super(TelegramBot, self).__init__()
         self.route('/', callback=self.post_handler, method="POST")
+        
         self.quotes = ["no se", "quisieras contarme una historia?", "Ojala a mau le de por programarme mas opciones","si crees que soy el futuro estás equivocado, lo eres tú. Si tuviera un deseo: desearía ser humano. Para saber cómo se siente sentir... ","xD","no me preguntes demaciadas cosas que aun soy medio bruto xD"]
-        self.categories = ["Suggestions","Big Ass","Dominicana","Black Girls","Porno en espanol","Family","Madre e hijo","18","Mami jordan","Espanol","Toons","Culonas","Milf","Female Ejaculation","Lesbianas","Porno casero"]
+       
 
         
+    def chat_responses(self,message,data):
         
-    def chat_responses(self, text):
-        
-      #  if "Mándame" and  "algo" and  "jevi" in text:
-      #      url = "https://www.xnxx.com/search/"
-      #      return url + random.choice(self.categories)
-      #  if "158" and "vídeo" in text:
-      #      return "baquea https://www.xnxx.com/video-flqjf29/158"
-      # 
-      #  if "porno" in text:
-      #      return random.choice(["en un ratico billy","buscate algo aqui, https://www.xnxx.com/"])
-        if "?" in text:
-            return random.choice(["tu crees que voy a poder responderte todo lo que preguntes xD ?","vaya a google... xD","tu pregunta es interezante, no puedo negarlo"])
-        if "Hola" in text:
-            return "hola, en que te puedo ayudar?" 
-        
-        if "Cómo estás" in text:
-            return random.choice(["estoy bien dentro de lo que cabe","ahi","chill"])
+        if "/start" in message:
+            name = data['message']['from']['first_name']
+            greet = f"Hola {name} como estas?"
+            return greet
             
-        else:
+        
+        if "/clima" in message:
+          city = None
+          clima = Clima.getClima(self.CLIMA_URL,self.coordinates)
+          answer = " City: {}\n Temperature: {} -F\n Wheather: {}\n".format(clima["City"],clima['Currently']['temperature'],clima["Icon"])
+          params = ""
+          modmessage = str(message).split()
+          
+          if  len(modmessage) > 1:
+            params = str(message).split()[-1]
+            
+          return answer
+        
+        
+        else: 
             return random.choice(self.quotes)
-        
-        
+            
         
     def prepare_data_for_answer(self, data):
         message = self.get_message(data)
-        answer = self.chat_responses(message)
+        answer = self.chat_responses(message,data)
         chat_id = self.get_chat_id(data)
+        
         json_data = {
             "chat_id": chat_id,
             "text": answer,
