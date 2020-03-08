@@ -14,11 +14,11 @@ def getCoordinates(apiURL,location):
 
 def getClima(apiURL,coordinates):
     requestData = requests.get(apiURL + str(coordinates)).json()
-    celcius = celcius = (int(requestData['currently']) - 32) * 5 / 9
+    celcius = (int(requestData['currently']['temperature']) - 32) * 5 / 9
     jsonResponse = {
             "City": requestData["timezone"],
             "Icon": requestData["currently"]["icon"],
-            "Currently": celcius,
+            "Currently": round(celcius),
         }
     #print(requestData.json())
     #print(jsonResponse)

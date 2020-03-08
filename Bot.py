@@ -36,8 +36,8 @@ class BotHandlerMixin:
 class TelegramBot(BotHandlerMixin, Bottle):  
     BOT_URL = None
     CLIMA_URL = "https://api.darksky.net/forecast/246b51e71bee40bb6c2891177a6d6035/"
-    coordinates = "18.4667,-69.9000"
-    
+    coordinates = "18.5328281,-69.7907998"
+
     if os.environ.get('APP_LOCATION') == 'heroku':
       BOT_URL = os.environ.get("API_TOKEN_URL")
     else:
@@ -63,7 +63,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
         if "/clima" in message:
           city = None
           clima = Clima.getClima(self.CLIMA_URL,self.coordinates)
-          answer = " City: {}\n Temperature: {} -F\n Wheather: {}\n".format(clima["City"],clima['Currently']['temperature'],clima["Icon"])
+          answer = " City: {}\n Temperature: {} -C\n Wheather: {}\n".format(clima["City"],clima['Currently'],clima["Icon"])
           params = ""
           modmessage = str(message).split()
           
