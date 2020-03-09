@@ -21,9 +21,9 @@ class BotHandlerMixin:
         """
         Method to extract message id from telegram request.
         """
-        message_text = data['message']['text']
+        message = data
 
-        return message_text
+        return message  
 
     def send_message(self, prepared_data):
         """
@@ -36,8 +36,7 @@ class BotHandlerMixin:
 class TelegramBot(BotHandlerMixin, Bottle):  
     BOT_URL = None
     CLIMA_URL = "https://api.darksky.net/forecast/246b51e71bee40bb6c2891177a6d6035/"
-    coordinates = "18.5328281,-69.7907998"
-
+    
     if os.environ.get('APP_LOCATION') == 'heroku':
       BOT_URL = os.environ.get("API_TOKEN_URL")
     else:
@@ -52,34 +51,29 @@ class TelegramBot(BotHandlerMixin, Bottle):
        
 
         
-    def chat_responses(self,message,data):
-        
-        if "/start" in message:
-            name = data['message']['from']['first_name']
-            greet = f"Hola {name} como estas?"
-            return greet
-            
-        
-        if "/clima" in message:
-          city = None
-          clima = Clima.getClima(self.CLIMA_URL,self.coordinates)
-          answer = " City: {}\n Temperature: {} -C\n Wheather: {}\n".format(clima["City"],clima['Currently'],clima["Icon"])
-          params = ""
-          modmessage = str(message).split()
-          
-          if  len(modmessage) > 1:
-            params = str(message).split()[-1]
+    def chat_responses(self,message):
+      
+        if 'location' in message['message']:
+          latitude = message['message']['location']['latitude']
+          longitude = message['message']['location']['longitude']
+          coordinates = str(latitude) + ',' + str(longitude)
+          clima = Clima.getClima(self.CLIMA_URL,coordinates)
+          answer = f" City: {clima['City']}\n Temperature: {clima['Currently']} -C\n Wheather: {clima['Icon']}\n"
             
           return answer
         
-        
-        else: 
-            return random.choice(self.quotes)
+        if "/start" in message['message']['text']:
+            name = message['message']['from']['first_name']
+            greet = f"Hi {name} how you doing? send me a location and I will tell you the current wheather."
             
+            return greet
+        
+        else:
+          return random.choice(self.quotes)  
         
     def prepare_data_for_answer(self, data):
         message = self.get_message(data)
-        answer = self.chat_responses(message,data)
+        answer = self.chat_responses(message)
         chat_id = self.get_chat_id(data)
         
         json_data = {
