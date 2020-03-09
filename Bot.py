@@ -64,7 +64,7 @@ class TelegramBot(BotHandlerMixin, Bottle):
         
         if "/start" in message['message']['text']:
             name = message['message']['from']['first_name']
-            greet = f"Hi {name} how you doing? send me a location and I will tell you the current wheather."
+            greet = f"Hi {name} how you doing?\n Send me a location and I will tell you the current wheather!!!"
             
             return greet
         
