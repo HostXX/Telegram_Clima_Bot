@@ -1,8 +1,8 @@
+import requests
+from bottle import Bottle, response, request as bottle_request
 import re
 import random
 import os
-import requests
-from bottle import Bottle, response, request as bottle_request
 import Clima
 
 class BotHandlerMixin:  
