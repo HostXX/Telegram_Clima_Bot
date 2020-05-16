@@ -5,10 +5,12 @@ import random
 import os
 import Clima
 
-class BotHandlerMixin:  
-    BOT_URL = None
-    
-    
+class BotHandlerMixin:
+   BOT_URL = None
+
+    if os.environ.get('APP_LOCATION') == 'heroku':
+      BOT_URL = os.environ.get("API_TOKEN_URL")
+
     def get_chat_id(self, data):
         """
         Method to extract chat id from telegram request.
@@ -36,14 +38,11 @@ class BotHandlerMixin:
 class TelegramBot(BotHandlerMixin, Bottle):  
   
     BOT_URL = None
-    CLIMA_API_URL = "https://api.darksky.net/forecast/246b51e71bee40bb6c2891177a6d6035/"
-    
+    CLIMA_API_URL=None
+
     if os.environ.get('APP_LOCATION') == 'heroku':
       BOT_URL = os.environ.get("API_TOKEN_URL")
-    else:
-      BOT_URL = 'https://api.telegram.org/bot931660199:AAF__ZLvWzFZz8T5Ykbbwwj1VdnmvwdI0p8/'
-    
-    
+
     def __init__(self, *args, **kwargs):
         super(TelegramBot, self).__init__()
         self.route('/', callback=self.post_handler, method="POST")
