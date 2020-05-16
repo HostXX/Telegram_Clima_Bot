@@ -5,11 +5,17 @@ import random
 import os
 import Clima
 
-class BotHandlerMixin:
-   BOT_URL = None
+
+class TelegramBot(Bottle):  
+    
+    BOT_URL = None
+    CLIMA_API_URL = None
 
     if os.environ.get('APP_LOCATION') == 'heroku':
       BOT_URL = os.environ.get("API_TOKEN_URL")
+      
+    if os.environ.get('APP_LOCATION') == 'heroku':
+      CLIMA_API_URL = os.environ.get("CLIMA_API_URL")
 
     def get_chat_id(self, data):
         """
@@ -33,23 +39,12 @@ class BotHandlerMixin:
         """       
         message_url = self.BOT_URL + 'sendMessage'
         requests.post(message_url, json=prepared_data)
-
-
-class TelegramBot(BotHandlerMixin, Bottle):  
-  
-    BOT_URL = None
-    CLIMA_API_URL=None
-
-    if os.environ.get('APP_LOCATION') == 'heroku':
-      BOT_URL = os.environ.get("API_TOKEN_URL")
-
+        
     def __init__(self, *args, **kwargs):
         super(TelegramBot, self).__init__()
         self.route('/', callback=self.post_handler, method="POST")
         
         self.quotes = ["no se", "quisieras contarme una historia?", "Ojala a mau le de por programarme mas opciones","si crees que soy el futuro estás equivocado, lo eres tú. Si tuviera un deseo: desearía ser humano. Para saber cómo se siente sentir... ","xD","no me preguntes demaciadas cosas que aun soy medio bruto xD"]
-       
-
         
     def chat_responses(self,message):
       
